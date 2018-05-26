@@ -1,0 +1,1 @@
+minetest.register_alias('hammer', 'fancy_tnt:hammer')
