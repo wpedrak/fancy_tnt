@@ -54,16 +54,18 @@ minetest.register_node("fancy_tnt:copy", {
 		update_description(pos)
 	end,
     on_punch = function(pos, node, puncher, pointed_thing)
-        if puncher:get_wielded_item():get_name() == "default:torch" then
-            minetest.swap_node(pos, {name="fancy_tnt:copy_burning"})
-            minetest.registered_nodes["fancy_tnt:copy_burning"].on_construct(pos)
+        local punch_item_name = puncher:get_wielded_item():get_name()
+        if punch_item_name == "fancy_tnt:hammer" then
+            local meta = minetest.get_meta(pos)
+            local counter = meta:get_int('punch_counter')
+            meta:set_int('punch_counter', counter+1)
+            update_description(pos)
             return
         end
-        
-        local meta = minetest.get_meta(pos)
-		local counter = meta:get_int('punch_counter')
-		meta:set_int('punch_counter', counter+1)
-		update_description(pos)
+        if punch_item_name == "default:torch" then
+            minetest.swap_node(pos, {name="fancy_tnt:copy_burning"})
+            minetest.registered_nodes["fancy_tnt:copy_burning"].on_construct(pos)
+        end
     end,
 })
 
