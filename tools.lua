@@ -1,6 +1,6 @@
 minetest.register_tool("fancy_tnt:hammer", {
 	description = "Hammer",
-	inventory_image = "default_tool_diamondsword.png",
+	inventory_image = "hammer.png",
 	tool_capabilities = {
 		full_punch_interval = 0.7,
 		max_drop_level=1,

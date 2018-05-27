@@ -79,6 +79,7 @@ minetest.register_node("fancy_tnt:copy_burning", {
         max_hear_distance = 128})
         local meta        = minetest.get_meta(pos)
         local floor_size  = meta:get_int('punch_counter')
+        meta:set_string("infotext", "")
 		make_floor(pos, floor_size)
     end,
     -- unaffected by explosions
