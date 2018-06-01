@@ -17,7 +17,11 @@ end
 function M.set_xyz_description(pos)
     local meta = minetest.get_meta(pos)
     local x, y, z = M.get_meta_xyz(pos)
-    meta:set_string("infotext", '('..x..', '..y..', '..z..')')
+    local fill_type = meta:get_string('fill_type')
+    meta:set_string("infotext", '('..x..', '..
+                                     y..', '..
+                                     z..')\n'..
+                                fill_type)
 end
 
 function M.stoi(str, bounds)
@@ -48,7 +52,7 @@ function M.validate(form, numeric)
     return true
 end
 
-function M.make_cuboid(pos, dims)
+function M.make_cuboid(pos, dims, fill_type)
 	local pos_top     = vector.add(pos, {x=0, y=1, z=0})
 	local node_top    = minetest.get_node_or_nil(pos_top)
     
@@ -59,12 +63,14 @@ function M.make_cuboid(pos, dims)
     
     minetest.remove_node(pos_top)
     
+    local is_filled   = fill_type == 'Filled'
     local diff        = vector.subtract(dims, {x=1, y=1, z=1})
 	local pos2 		  = vector.add(pos, diff)
 	local vm          = minetest.get_voxel_manip()
 	local emin, emax  = vm:read_from_map(pos, pos2)
     local data        = vm:get_data()
     local c_node_top  = minetest.get_content_id(node_top.name)
+    local c_air       = minetest.get_content_id('air')
     local va          = VoxelArea:new{
                                         MinEdge = emin,
                                         MaxEdge = emax,
@@ -73,7 +79,25 @@ function M.make_cuboid(pos, dims)
         for y = pos.y, pos2.y do
             for x = pos.x, pos2.x do
                 local vi = va:index(x, y, z)
-                data[vi] = c_node_top
+                if (not is_filled and
+                    z ~= pos.z and z ~= pos2.z and
+                    y ~= pos.y and y ~= pos2.y and
+                    x ~= pos.x and x ~= pos2.x) then
+                    
+                    data[vi] = c_air
+                else
+                    data[vi] = c_node_top
+                end
+            end
+        end
+    end
+    if fill_type == 'Empty' then
+        for z = pos.z+1, pos2.z-1 do
+            for y = pos.y+1, pos2.y-1 do
+                for x = pos.x+1, pos2.x-1 do
+                    local vi = va:index(x, y, z)
+                    data[vi] = c_air
+                end
             end
         end
     end

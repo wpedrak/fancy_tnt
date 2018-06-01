@@ -13,6 +13,8 @@ minetest.register_node("fancy_tnt:copy", {
     groups = {dig_immediate = 2, mesecon = 2, tnt = 1, flammable = 5},
     sounds = default.node_sound_wood_defaults(),
     on_construct = function(pos)
+        local meta = minetest.get_meta(pos)
+        meta:set_string('fill_type', 'Filled')
         H.set_meta_xyz(pos, {3,3,3})
         H.set_xyz_description(pos)
     end,
@@ -41,11 +43,12 @@ minetest.register_node("fancy_tnt:copy_burning", {
     on_timer = function(pos, elapsed)
         minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5,
         max_hear_distance = 128})
-        x, y, z = H.get_meta_xyz(pos)
+        local x, y, z = H.get_meta_xyz(pos)
         local meta = minetest.get_meta(pos)
+        local fill_type = meta:get_string('fill_type')
         meta:set_string("infotext", "")
         cuboid_size = {x=x, y=y, z=z}
-		H.make_cuboid(pos, cuboid_size)
+		H.make_cuboid(pos, cuboid_size, fill_type)
     end,
     -- unaffected by explosions
     on_blast = function() end,
