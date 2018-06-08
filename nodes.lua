@@ -58,3 +58,52 @@ minetest.register_node("fancy_tnt:copy_burning", {
         -- minetest.check_for_falling(pos)
     end,
 })
+
+minetest.register_node("fancy_tnt:maze", {
+    description = "Maze TNT",
+    tiles = {"tnt_up.png", 
+             "tnt_bot.png", 
+             "tnt_maze_right.png",
+             "tnt_maze_side.png",
+             "tnt_maze_back.png",
+             "tnt_maze_side.png",
+            },
+    groups = {dig_immediate = 2, mesecon = 2, tnt = 1, flammable = 5},
+    sounds = default.node_sound_wood_defaults(),
+    on_construct = function(pos)
+    end,
+
+    on_punch = function(pos, node, puncher, pointed_thing)
+        local punch_item_name = puncher:get_wielded_item():get_name()
+        if punch_item_name == "default:torch" then
+            minetest.swap_node(pos, {name="fancy_tnt:maze_burning"})
+            minetest.registered_nodes["fancy_tnt:maze_burning"].on_construct(pos)
+            return
+        end
+    end,
+})
+
+minetest.register_node("fancy_tnt:maze_burning", {
+    tiles = {"tnt_up_burning.png",
+             "tnt_bot_burning.png",
+             "tnt_maze_right_burning.png",
+             "tnt_maze_side_burning.png",
+             "tnt_maze_back_burning.png",
+             "tnt_maze_side_burning.png",
+            },
+    groups = {falling_node=1},
+    sounds = default.node_sound_wood_defaults(),
+    light_source = 5,
+    on_timer = function(pos, elapsed)
+        minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5,
+        max_hear_distance = 128})
+        minetest.remove_node(pos)
+        minetest.chat_send_all("boom!")
+    end,
+    -- unaffected by explosions
+    on_blast = function() end,
+    on_construct = function(pos)
+        minetest.sound_play("tnt_ignite", {pos = pos})
+        minetest.get_node_timer(pos):start(3)
+    end,
+})
