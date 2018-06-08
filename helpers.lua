@@ -91,16 +91,6 @@ function M.make_cuboid(pos, dims, fill_type)
             end
         end
     end
-    if fill_type == 'Empty' then
-        for z = pos.z+1, pos2.z-1 do
-            for y = pos.y+1, pos2.y-1 do
-                for x = pos.x+1, pos2.x-1 do
-                    local vi = va:index(x, y, z)
-                    data[vi] = c_air
-                end
-            end
-        end
-    end
     
     vm:set_data(data)
     vm:write_to_map(data)
