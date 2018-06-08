@@ -1,5 +1,8 @@
 local M = {}
 
+local c_air = minetest.get_content_id('air')
+
+
 function M.set_meta_xyz(pos, tab)
     local meta = minetest.get_meta(pos)
     meta:set_int('x', tab.x or tab[1])
@@ -70,7 +73,6 @@ function M.make_cuboid(pos, dims, fill_type)
 	local emin, emax  = vm:read_from_map(pos, pos2)
     local data        = vm:get_data()
     local c_node_top  = minetest.get_content_id(node_top.name)
-    local c_air       = minetest.get_content_id('air')
     local va          = VoxelArea:new{
                                         MinEdge = emin,
                                         MaxEdge = emax,

@@ -47,7 +47,7 @@ minetest.register_node("fancy_tnt:copy_burning", {
         local meta = minetest.get_meta(pos)
         local fill_type = meta:get_string('fill_type')
         meta:set_string("infotext", "")
-        cuboid_size = {x=x, y=y, z=z}
+        local cuboid_size = {x=x, y=y, z=z}
 		H.make_cuboid(pos, cuboid_size, fill_type)
     end,
     -- unaffected by explosions
@@ -71,6 +71,9 @@ minetest.register_node("fancy_tnt:maze", {
     groups = {dig_immediate = 2, mesecon = 2, tnt = 1, flammable = 5},
     sounds = default.node_sound_wood_defaults(),
     on_construct = function(pos)
+        local meta = minetest.get_meta(pos)
+        local inv  = meta:get_inventory()
+        inv:set_size("main", 32) -- 8*4
     end,
 
     on_punch = function(pos, node, puncher, pointed_thing)
