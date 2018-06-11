@@ -29,11 +29,12 @@ end
 local function create_maze_tnt_formspec(pos, user_name)
 	maze_tnt_hammer_formspec_context[user_name] = {pos=pos}
 	local meta = minetest.get_meta(pos)
+	local x, y, z = pos.x, pos.y, pos.z
 	minetest.show_formspec(user_name, "fancy_tnt:maze_edit",
-		"size[16,10]" ..
+		"size[10,11]" ..
 		'bgcolor[#000000da]' .. 
-		'list[context;fields;0,0;8,4;]' ..
-		'list[current_player;main;0,5;8,4;]'
+		'list[nodemeta:'..x..','..y..','..z..';fields;0,0;10,6;]' ..
+		'list[current_player;main;1,6.5;8,4;]'
 	)
 end
 
@@ -55,8 +56,8 @@ local function hammer_use(itemstack, user, pointed_thing)
 	local meta = minetest.get_meta(pos)
 	local tab = meta:to_table()
 	print(dump(tab))
-	if tab.inventory.main then
-		local fst = tab.inventory.main[1]
+	if tab.inventory.fields then
+		local fst = tab.inventory.fields[1]
 		print(dump(fst:to_table()))
 	end
 

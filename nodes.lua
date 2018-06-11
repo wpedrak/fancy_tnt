@@ -72,8 +72,20 @@ minetest.register_node("fancy_tnt:maze", {
     sounds = default.node_sound_wood_defaults(),
     on_construct = function(pos)
         local meta = minetest.get_meta(pos)
-        local inv  = meta:get_inventory()
-        inv:set_size("main", 32) -- 8*4
+
+        meta:from_table({
+            inventory = {
+                fields = { -- 6 x 10
+                    "", "", "", "", "", "", "", "", "", "",
+                    "", "", "", "", "", "", "", "", "", "",
+                    "", "", "", "", "", "", "", "", "", "",
+                    "", "", "", "", "", "", "", "", "", "",
+                    "", "", "", "", "", "", "", "", "", "",
+                    "", "", "", "", "", "", "", "", "", "",
+                }
+            },
+            fields = {}
+        })
     end,
 
     on_punch = function(pos, node, puncher, pointed_thing)
