@@ -91,7 +91,10 @@ minetest.register_node("fancy_tnt:maze", {
     on_punch = function(pos, node, puncher, pointed_thing)
         local punch_item_name = puncher:get_wielded_item():get_name()
         if punch_item_name == "default:torch" then
+            -- local old_meta = minetest.get_meta(pos):to_table()
             minetest.swap_node(pos, {name="fancy_tnt:maze_burning"})
+            -- local new_meta = minetest.get_meta(pos)
+            -- new_meta:from_table(old_meta)
             minetest.registered_nodes["fancy_tnt:maze_burning"].on_construct(pos)
             return
         end
@@ -111,7 +114,6 @@ minetest.register_node("fancy_tnt:maze_burning", {
     light_source = 5,
     on_timer = function(pos, elapsed)
         minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5, max_hear_distance = 128})
-        minetest.remove_node(pos)
         local meta = minetest.get_meta(pos)
         local maze2d = H.reshape(meta:to_table().inventory.fields, {6, 10})
         H.make_maze(pos, maze2d)
@@ -119,6 +121,7 @@ minetest.register_node("fancy_tnt:maze_burning", {
     -- unaffected by explosions
     on_blast = function() end,
     on_construct = function(pos)
+        local meta = minetest.get_meta(pos)
         minetest.sound_play("tnt_ignite", {pos = pos})
         minetest.get_node_timer(pos):start(3)
     end,

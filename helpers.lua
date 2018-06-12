@@ -103,11 +103,32 @@ function M.make_cuboid(pos, dims, fill_type)
 end
 
 function M.reshape(table, shape)
+    if #shape ~= 2 or #table ~= shape[1] * shape[2] then
+        return
+    end
 
+    local result = {}
+    local h, w = shape[1], shape[2]
+
+    for i=1,h do
+        local row = {}
+        for j=1,w do
+            row[j] = table[j + (i-1)*w]
+        end
+        result[i] = row
+    end
+
+    return result
 end
 
 function M.make_maze(pos, maze)
-
+    print(dump(maze))
+    print(dump(maze[1][1]))
+    local fst = maze[1][1]
+    print(dump(fst:to_table()))
+    print(fst:get_name())
+    print(fst:get_count())
+    minetest.remove_node(pos)
 end
 
 
