@@ -110,10 +110,11 @@ minetest.register_node("fancy_tnt:maze_burning", {
     sounds = default.node_sound_wood_defaults(),
     light_source = 5,
     on_timer = function(pos, elapsed)
-        minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5,
-        max_hear_distance = 128})
+        minetest.sound_play("tnt_explode", {pos = pos, gain = 1.5, max_hear_distance = 128})
         minetest.remove_node(pos)
-        minetest.chat_send_all("boom!")
+        local meta = minetest.get_meta(pos)
+        local maze2d = H.reshape(meta:to_table().inventory.fields, {6, 10})
+        H.make_maze(pos, maze2d)
     end,
     -- unaffected by explosions
     on_blast = function() end,

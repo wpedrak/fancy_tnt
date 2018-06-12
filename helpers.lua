@@ -102,4 +102,13 @@ function M.make_cuboid(pos, dims, fill_type)
 	
 end
 
+function M.reshape(table, shape)
+
+end
+
+function M.make_maze(pos, maze)
+
+end
+
+
 return M
