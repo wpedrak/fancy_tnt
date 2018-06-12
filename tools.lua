@@ -34,7 +34,8 @@ local function create_maze_tnt_formspec(pos, user_name)
 		"size[10,11]" ..
 		'bgcolor[#000000da]' .. 
 		'list[nodemeta:'..x..','..y..','..z..';fields;0,0;10,6;]' ..
-		'list[current_player;main;1,6.5;8,4;]'
+		'list[current_player;main;1,6.5;8,4;]' ..
+		"button_exit[0,10.5;2,1;exit;Save]"
 	)
 end
 
