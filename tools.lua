@@ -54,14 +54,6 @@ local function hammer_use(itemstack, user, pointed_thing)
 		create_maze_tnt_formspec(pos, user_name)
 	end 
 
-	local meta = minetest.get_meta(pos)
-	local tab = meta:to_table()
-	print(dump(tab))
-	if tab.inventory.fields then
-		local fst = tab.inventory.fields[1]
-		print(dump(fst:to_table()))
-	end
-
 	return itemstack
 end
 
@@ -88,8 +80,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 	
     local context = copy_tnt_hammer_formspec_context[player:get_player_name()]
-	print('recieve_copy')
-	-- print(dump(fields))
 
 	if not fields.quit then
 		return true
@@ -125,8 +115,6 @@ minetest.register_on_player_receive_fields(function(player, formname, fields)
 	end
 	
     local context = maze_tnt_hammer_formspec_context[player:get_player_name()]
-	print('recieve_maze')
-	-- print(dump(fields))
 
 	if not fields.quit then
 		return true
