@@ -96,10 +96,7 @@ function M.make_cuboid(pos, dims, fill_type)
     
     vm:set_data(data)
     vm:write_to_map(data)
-    vm:update_map()
-    
-	-- minetest.chat_send_all(dump(node_top))
-	
+    vm:update_map()	
 end
 
 function M.reshape(table, shape)
@@ -121,14 +118,68 @@ function M.reshape(table, shape)
     return result
 end
 
+local function map(tab, f)
+    local res = {}
+    for _, e in ipairs(tab) do
+            table.insert( res, f(e) )
+    end
+    return res
+end
+   
+local function count_tab_max(tab)
+    local res = tab[1]:get_count()
+
+    for _,v in ipairs(tab) do
+        res = math.max(res, v:get_count())
+    end
+    
+    return res
+end
+
+local function tab_max(tab)
+    local res = tab[1]
+
+    for _,v in ipairs(tab) do
+        res = math.max(res, v)
+    end
+    
+    return res
+end
+
 function M.make_maze(pos, maze)
-    print(dump(maze))
-    print(dump(maze[1][1]))
-    local fst = maze[1][1]
-    print(dump(fst:to_table()))
-    print(fst:get_name())
-    print(fst:get_count())
-    minetest.remove_node(pos)
+    local x_size      = #maze[1]
+    local z_size      = #maze
+    local y_size      = tab_max(map(maze, count_tab_max))
+    local pos2 		  = vector.add(pos, {x=x_size, y=y_size, z=z_size})
+	local vm          = minetest.get_voxel_manip()
+	local emin, emax  = vm:read_from_map(pos, pos2)
+    local data        = vm:get_data()
+    local va          = VoxelArea:new{
+                                        MinEdge = emin,
+                                        MaxEdge = emax,
+                                    }
+
+    for z_idx = 1, z_size do
+        local z = pos.z + z_idx - 1
+        for x_idx = 1, x_size do
+            local x = pos.x + x_idx - 1
+            local maze_item = maze[z_size - z_idx + 1][x_idx]
+            local count  = maze_item:get_count()
+
+            if count and count > 0 then
+                local c_node = minetest.get_content_id(maze_item:get_name())
+
+                for y = pos.y, pos.y + count-1 do
+                    local vi = va:index(x, y, z)
+                    data[vi] = c_node
+                end
+            end
+        end
+    end
+
+    vm:set_data(data)
+    vm:write_to_map(data)
+    vm:update_map()
 end
 
 
