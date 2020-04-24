@@ -2,6 +2,7 @@
 This mod provides two blocks:
  - Copy tnt
  - Maze tnt
+ 
 It also provides one tool:
  - Hammer
  
